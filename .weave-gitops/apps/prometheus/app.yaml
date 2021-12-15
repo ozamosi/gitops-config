@@ -1,0 +1,15 @@
+---
+apiVersion: wego.weave.works/v1alpha1
+kind: Application
+metadata:
+  labels:
+    wego.weave.works/app-identifier: wego-37d1e982293ba811aa691ced67fd4dc1
+  name: prometheus
+  namespace: wego-system
+spec:
+  branch: main
+  config_url: ssh://git@github.com/ozamosi/gitops-config.git
+  deployment_type: helm
+  path: prometheus
+  source_type: helm
+  url: https://github.com/weaveworks/profiles-catalog

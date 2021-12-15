@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: prometheus
+  namespace: wego-system
+spec:
+  interval: 30s
+  url: https://github.com/weaveworks/profiles-catalog
+
