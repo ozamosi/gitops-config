@@ -118,3 +118,33 @@ roleRef:
   kind: Role
   name: apps-reader
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: wego-system
+  name: wego-app
+spec:
+  ports:
+    - port: 9001
+  selector:
+    namespace: wego-system
+    name: wego-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wego-app
+  namespace: wego-system
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wego-app
+            port:
+              number: 9001
