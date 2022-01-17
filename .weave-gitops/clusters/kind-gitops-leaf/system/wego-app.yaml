@@ -14,11 +14,23 @@ spec:
       containers:
         - name: wego-app
           image: ghcr.io/weaveworks/wego-app:v0.6.0-23-g4deac9a5
-          args: ["ui", "run", "-l", "--helm-repo-namespace", "wego-system"]
+          args:
+            - "ui"
+            - "run"
+            - "-l"
+            - "--helm-repo-namespace"
+            - "wego-system"
+            - "--oidc-provider-url=http://gitops-cloud-control-plane"
+            - "--client-id=c432d002-f675-4f16-9c96-890574585876"
+            - "--client-secret=dontneedone"
+            - "--redirect-url=dontneedone"
           ports:
             - containerPort: 9001
               protocol: TCP
           imagePullPolicy: IfNotPresent
+          env:
+            - name: WEAVE_GITOPS_AUTH_ENABLED
+              value: "true"
   selector:
     matchLabels:
       app: wego-app
@@ -82,3 +94,40 @@ spec:
     - protocol: TCP
       port: 9001
       targetPort: 9001
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: wego-system
+  name: apps-reader
+rules:
+- apiGroups: ["wego.weave.works"]
+  resources: ["apps"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-apps
+  namespace: wego-system
+subjects:
+- kind: Group
+  name: cloud
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: apps-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wego-app
+  namespace: wego-system
+spec:
+  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: wego-app
+      port:
+        number: 9001
