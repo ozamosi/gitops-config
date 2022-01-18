@@ -1,0 +1,12 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: wego-auto-github-gitops-config
+  namespace: wego-system
+spec:
+  interval: 30s
+  ref:
+    branch: wego-5f68ce045f195d348fce79d5911bfe61
+  url: https://github.com/ozamosi/gitops-config.git
+
